@@ -1,1 +1,1 @@
-Plugin for tracking chrome activity
+Plugin for tracking browser activity

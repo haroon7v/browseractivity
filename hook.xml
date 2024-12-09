@@ -4,9 +4,9 @@
         <value>en_GB</value>
     </hook>
     <hook type="cdentry">
-        <identifier>cd_chromeactivity</identifier>
+        <identifier>cd_browseractivity</identifier>
         <translation>112398</translation>
         <category>other</category>
-        <available>chromeactivity</available>
+        <available>browseractivity</available>
     </hook>
 </hookstore>

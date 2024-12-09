@@ -9,14 +9,14 @@ if (AJAX) {
 }
 
 // print a title for the table
-print_item_header("Chrome Activity");
+print_item_header("Browser Activity");
 
 if (!isset($protectedPost['SHOW'])) {
     $protectedPost['SHOW'] = 'NOSHOW';
 }
 
 // form details and tab options
-$form_name = "chromeactivity";
+$form_name = "browseractivity";
 $table_name = $form_name;
 $tab_options = $protectedPost;
 $tab_options['form_name'] = $form_name;
@@ -25,9 +25,8 @@ $tab_options['table_name'] = $table_name;
 
 echo open_form($form_name);
 $list_fields = array(
-                    'Url' => 'URL',
                     'Domain' => 'DOMAIN',
-                    'Subdomain' => 'SUBDOMAIN',
+                    'Title' => 'TITLE',
                     'Protocol' => 'PROTOCOL',
                     'Username' => 'USERNAME',
                     'Accessed At' => 'ACCESSEDAT');
@@ -37,7 +36,7 @@ $default_fields = $list_fields;
 
 // select columns for table display
 $sql = prepare_sql_tab($list_fields);
-$sql['SQL']  .= "FROM chromeactivity WHERE (hardware_id = $systemid)";
+$sql['SQL']  .= "FROM browseractivity WHERE (hardware_id = $systemid)";
 
 array_push($sql['ARG'], $systemid);
 $tab_options['ARG_SQL'] = $sql['ARG'];

@@ -1,9 +1,9 @@
-package Apache::Ocsinventory::Plugins::Chromeactivity::Map;
+package Apache::Ocsinventory::Plugins::Browseractivity::Map;
  
 use strict;
  
 use Apache::Ocsinventory::Map;
-$DATA_MAP{chromeactivity} = {
+$DATA_MAP{browseractivity} = {
    mask => 0,
    multi => 1,
    auto => 1,
@@ -12,9 +12,8 @@ $DATA_MAP{chromeactivity} = {
    writeDiff => 0,
    cache => 0,
    fields => {
-       URL => {},
        DOMAIN => {},
-       SUBDOMAIN => {},
+       TITLE => {},
        PROTOCOL => {},
        USERNAME => {},
        ACCESSEDAT => {}

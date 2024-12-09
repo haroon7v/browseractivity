@@ -39,22 +39,19 @@ Get-ChildItem -Path "C:\Users" | ForEach-Object {
                     $uri = [uri]$url
                     $protocol = $uri.Scheme
                     $domain = $uri.Host
-                    $subdomain = ($domain -split "\.")[0]
                 } catch {
                     # Handle invalid URLs gracefully
                     $protocol = "Unknown"
                     $domain = "Unknown"
-                    $subdomain = "Unknown"
                 }
 
-                $xml += "<CHROMEACTIVITY>"
-                $xml += "<URL>$url</URL>"
+                $xml += "<BROWSERACTIVITY>"
                 $xml += "<DOMAIN>$domain</DOMAIN>"
-                $xml += "<SUBDOMAIN>$subdomain</SUBDOMAIN>"
+                $xml += "<TITLE>$title</TITLE>"
                 $xml += "<PROTOCOL>$protocol</PROTOCOL>"
                 $xml += "<ACCESSEDAT>$visitTime</ACCESSEDAT>"
                 $xml += "<USERNAME>$username</USERNAME>"
-                $xml += "</CHROMEACTIVITY>"
+                $xml += "</BROWSERACTIVITY>"
             }
         }
     } catch {
@@ -63,8 +60,6 @@ Get-ChildItem -Path "C:\Users" | ForEach-Object {
         Remove-Item -Path $tempHistoryPath -Force -ErrorAction SilentlyContinue
     }
 }
-
-if ($xml -eq "") { $xml = "<CHROMEACTIVITY/>" }
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::WriteLine($xml)

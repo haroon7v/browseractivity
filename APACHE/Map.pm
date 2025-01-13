@@ -16,7 +16,7 @@ $DATA_MAP{browseractivity} = {
        TITLE => {},
        PROTOCOL => {},
        USERNAME => {},
-       ACCESSEDAT => {}
+       VISITTIME => {}
    }
 };
 1;

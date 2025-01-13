@@ -29,7 +29,7 @@ $list_fields = array(
                     'Title' => 'TITLE',
                     'Protocol' => 'PROTOCOL',
                     'Username' => 'USERNAME',
-                    'Accessed At' => 'ACCESSEDAT');
+                    'Visit Time' => 'VISITTIME');
 // columns to include at any time and default columns
 $list_col_cant_del = $list_fields;
 $default_fields = $list_fields;

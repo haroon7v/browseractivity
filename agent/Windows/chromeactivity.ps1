@@ -1,9 +1,9 @@
-$xml             = ""
-$sqlitePath      = "C:\Program Files\OCS Inventory Agent\sqlite3.exe"
+$xml        = ""
+$sqlitePath = "C:\Program Files\OCS Inventory Agent\sqlite3.exe"
 
 Get-ChildItem -Path "C:\Users" | ForEach-Object {
-    $userProfilePath = $_.FullName
-    $username = $_.Name
+    $userProfilePath   = $_.FullName
+    $username          = $_.Name
     $chromeHistoryPath = "$userProfilePath\AppData\Local\Google\Chrome\User Data\Default\History"
 
     if (($username -eq "Public") -or !(Test-Path $chromeHistoryPath)) { return }
@@ -13,11 +13,10 @@ Get-ChildItem -Path "C:\Users" | ForEach-Object {
     try {
         Copy-Item -Path $chromeHistoryPath -Destination $tempHistoryPath -Force
         $rawResults = & $sqlitePath $tempHistoryPath "
-            PRAGMA journal_mode=WAL;
             SELECT
-                datetime(visits.visit_time/1000000-11644473600, 'unixepoch') AS VisitTime,
-                urls.url AS URL,
-                urls.title AS Title
+                visits.visit_time,
+                urls.url,
+                urls.title
             FROM
                 urls
             JOIN
@@ -31,25 +30,25 @@ Get-ChildItem -Path "C:\Users" | ForEach-Object {
         $rawResults -split "`n" | ForEach-Object {
             $columns = $_ -split '\|'
             if ($columns.Count -eq 3) {
-                $visitTime = $columns[0]
-                $url = $columns[1]
-                $title = $columns[2]
+                $visitTime  = $columns[0]
+                $url        = $columns[1]
+                $title      = $columns[2]
 
                 try {
-                    $uri = [uri]$url
+                    $uri      = [uri]$url
                     $protocol = $uri.Scheme
-                    $domain = $uri.Host
+                    $domain   = $uri.Host
                 } catch {
                     # Handle invalid URLs gracefully
                     $protocol = "Unknown"
-                    $domain = "Unknown"
+                    $domain   = "Unknown"
                 }
 
                 $xml += "<BROWSERACTIVITY>"
                 $xml += "<DOMAIN>$domain</DOMAIN>"
                 $xml += "<TITLE>$title</TITLE>"
                 $xml += "<PROTOCOL>$protocol</PROTOCOL>"
-                $xml += "<ACCESSEDAT>$visitTime</ACCESSEDAT>"
+                $xml += "<VISITTIME>$visitTime</VISITTIME>"
                 $xml += "<USERNAME>$username</USERNAME>"
                 $xml += "</BROWSERACTIVITY>"
             }

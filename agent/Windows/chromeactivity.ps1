@@ -1,64 +1,56 @@
-$xml        = ""
-$sqlitePath = "C:\Program Files\OCS Inventory Agent\sqlite3.exe"
+$awServerUrl = "http://localhost:5600/api/0"
+$clientName = "aw-client-web"
+$timePeriod = -24 # last 1 day
 
-Get-ChildItem -Path "C:\Users" | ForEach-Object {
-    $userProfilePath   = $_.FullName
-    $username          = $_.Name
-    $chromeHistoryPath = "$userProfilePath\AppData\Local\Google\Chrome\User Data\Default\History"
-
-    if (($username -eq "Public") -or !(Test-Path $chromeHistoryPath)) { return }
-
-    $tempHistoryPath = "$env:TEMP\ChromeHistory_$username.db"
-
-    try {
-        Copy-Item -Path $chromeHistoryPath -Destination $tempHistoryPath -Force
-        $rawResults = & $sqlitePath $tempHistoryPath "
-            SELECT
-                visits.visit_time,
-                urls.url,
-                urls.title
-            FROM
-                urls
-            JOIN
-                visits ON urls.id = visits.url
-            WHERE
-                visits.visit_time > (strftime('%s', 'now') + 11644473600) * 1000000 - 86400000000
-            ORDER BY
-                visits.visit_time DESC
-        " 
-
-        $rawResults -split "`n" | ForEach-Object {
-            $columns = $_ -split '\|'
-            if ($columns.Count -eq 3) {
-                $visitTime  = $columns[0]
-                $url        = $columns[1]
-                $title      = $columns[2]
-
-                try {
-                    $uri      = [uri]$url
-                    $protocol = $uri.Scheme
-                    $domain   = $uri.Host
-                } catch {
-                    # Handle invalid URLs gracefully
-                    $protocol = "Unknown"
-                    $domain   = "Unknown"
-                }
-
-                $xml += "<BROWSERACTIVITY>"
-                $xml += "<DOMAIN>$domain</DOMAIN>"
-                $xml += "<TITLE>$title</TITLE>"
-                $xml += "<PROTOCOL>$protocol</PROTOCOL>"
-                $xml += "<VISITTIME>$visitTime</VISITTIME>"
-                $xml += "<USERNAME>$username</USERNAME>"
-                $xml += "</BROWSERACTIVITY>"
-            }
+try {
+    # find bucketId
+    $bucketsEndpoint = "$awServerUrl/buckets/"
+    $buckets         = Invoke-RestMethod -Uri $bucketsEndpoint -Method Get
+    $bucketId        = $null
+    foreach ($bucket in $buckets.PSObject.Properties) {
+        if ($bucket.Value.client -eq $clientName -and $bucket.Value.hostname -ne "unknown") {
+            $bucketId = $bucket.Name
+            break
         }
-    } catch {
-        # NOTHING TO DO
-    } finally {
-        Remove-Item -Path $tempHistoryPath -Force -ErrorAction SilentlyContinue
     }
-}
 
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-[Console]::WriteLine($xml)
+    if (-not $bucketId) { throw "No bucket found for client '$clientName'" }
+
+    # find events
+    $startTime      = (Get-Date).AddHours($timePeriod).ToUniversalTime().ToString("o")
+    $eventsEndpoint = "$awServerUrl/buckets/$bucketId/events?start=$startTime&limit=-1"
+    $response       = Invoke-RestMethod -Uri $eventsEndpoint -Method Get
+
+    if ($response) {
+        foreach ($event in $response) {
+            $url = $event.data.url
+            try {
+                $uri      = [uri]$url
+                $protocol = $uri.Scheme
+                $domain   = $uri.Host
+            } catch {
+                # Handle invalid URLs gracefully
+                $protocol = "Unknown"
+                $domain   = "Unknown"
+            }
+
+            if ($protocol -eq "chrome") { continue; }
+
+            $xml += "<BROWSERACTIVITY>"
+            $xml += "<URL>$url</URL>"
+            $xml += "<DOMAIN>$domain</DOMAIN>"
+            $xml += "<TITLE>$title</TITLE>"
+            $xml += "<PROTOCOL>$protocol</PROTOCOL>"
+            $xml += "<VISITTIME>$visitTime</VISITTIME>"
+            $xml += "<DUARTION>$($event.duration)</DURATION>" # duration in seconds.decimal
+            $xml += "</BROWSERACTIVITY>"
+        }
+    }
+    else {
+        $xml += "<BROWSERACTIVITY/>"
+    }
+    Write-Host $xml
+}
+catch {
+    Write-Error "Error: $_"
+}

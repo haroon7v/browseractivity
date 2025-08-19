@@ -12,11 +12,13 @@ $DATA_MAP{browseractivity} = {
    writeDiff => 0,
    cache => 0,
    fields => {
+       URL => {},
        DOMAIN => {},
        TITLE => {},
        PROTOCOL => {},
        USERNAME => {},
-       VISITTIME => {}
+       VISITTIME => {},
+       DURATION => {}
    }
 };
 1;

@@ -25,11 +25,13 @@ $tab_options['table_name'] = $table_name;
 
 echo open_form($form_name);
 $list_fields = array(
+                    'URL' => 'URL',
                     'Domain' => 'DOMAIN',
                     'Title' => 'TITLE',
                     'Protocol' => 'PROTOCOL',
                     'Username' => 'USERNAME',
-                    'Visit Time' => 'VISITTIME');
+                    'Visit Time' => 'VISITTIME',
+                    'Duration' => 'DURATION');
 // columns to include at any time and default columns
 $list_col_cant_del = $list_fields;
 $default_fields = $list_fields;

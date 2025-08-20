@@ -40,7 +40,7 @@ try {
             $xml += "<DOMAIN>$domain</DOMAIN>"
             $xml += "<TITLE>$($event.data.title)</TITLE>"
             $xml += "<PROTOCOL>$protocol</PROTOCOL>"
-            $xml += "<VISITTIME>$($event.timestamp)</VISITTIME>"
+            $xml += "<ACCESSED_AT>$($event.timestamp)</ACCESSED_AT>"
             $xml += "<DURATION>$($event.duration)</DURATION>" # duration in seconds.decimal
             $xml += "</BROWSERACTIVITY>"
         }

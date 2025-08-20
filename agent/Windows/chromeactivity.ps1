@@ -34,14 +34,14 @@ try {
                 $domain   = "Unknown"
             }
 
-            if ($protocol -eq "chrome") { continue; }
+            if ($protocol -eq "chrome" -or $domain -eq "Unknown") { continue; }
 
             $xml += "<BROWSERACTIVITY>"
             $xml += "<DOMAIN>$domain</DOMAIN>"
-            $xml += "<TITLE>$title</TITLE>"
+            $xml += "<TITLE>$($event.data.title)</TITLE>"
             $xml += "<PROTOCOL>$protocol</PROTOCOL>"
-            $xml += "<VISITTIME>$visitTime</VISITTIME>"
-            $xml += "<DUARTION>$($event.duration)</DURATION>" # duration in seconds.decimal
+            $xml += "<VISITTIME>$($event.timestamp)</VISITTIME>"
+            $xml += "<DURATION>$($event.duration)</DURATION>" # duration in seconds.decimal
             $xml += "</BROWSERACTIVITY>"
         }
     }

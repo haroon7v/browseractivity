@@ -8,16 +8,17 @@ $DATA_MAP{browseractivity} = {
    multi => 1,
    auto => 1,
    delOnReplace => 1,
-   sortBy => 'ACCESSEDAT',
+   sortBy => 'ACCESSED_AT',
    writeDiff => 0,
    cache => 0,
    fields => {
       DOMAIN => {},
       TITLE => {},
       PROTOCOL => {},
-      USERNAME => {},
-      VISITTIME => {},
-      DURATION => {}
+      # USERNAME => {},
+      # VISITTIME => {},
+      DURATION => {},
+      ACCESSED_AT => {}
    }
 };
 1;

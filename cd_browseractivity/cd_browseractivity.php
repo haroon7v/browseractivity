@@ -28,8 +28,9 @@ $list_fields = array(
                     'Domain' => 'DOMAIN',
                     'Title' => 'TITLE',
                     'Protocol' => 'PROTOCOL',
-                    'Username' => 'USERNAME',
-                    'Visit Time' => 'VISITTIME',
+                    // 'Username' => 'USERNAME',
+                    // 'Visit Time' => 'VISITTIME',
+                    'Accessed At' => 'ACCESSED_AT',
                     'Duration' => 'DURATION');
 // columns to include at any time and default columns
 $list_col_cant_del = $list_fields;

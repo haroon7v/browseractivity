@@ -37,7 +37,6 @@ try {
             if ($protocol -eq "chrome") { continue; }
 
             $xml += "<BROWSERACTIVITY>"
-            $xml += "<URL>$url</URL>"
             $xml += "<DOMAIN>$domain</DOMAIN>"
             $xml += "<TITLE>$title</TITLE>"
             $xml += "<PROTOCOL>$protocol</PROTOCOL>"

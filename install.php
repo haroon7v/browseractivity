@@ -7,7 +7,6 @@ function extension_install_browseractivity()
         "CREATE TABLE IF NOT EXISTS `browseractivity` (
         `ID` INTEGER NOT NULL AUTO_INCREMENT, 
         `HARDWARE_ID` INTEGER NOT NULL,
-        `URL` VARCHAR(2048) DEFAULT NULL,
         `DOMAIN` VARCHAR(255) DEFAULT NULL,   # https://stackoverflow.com/questions/14402407/maximum-length-of-a-domain-name-without-the-http-www-com-parts
         `TITLE` VARCHAR(255) DEFAULT NULL,    # has no limit, best practice is 60
         `PROTOCOL` VARCHAR(8) DEFAULT NULL,

@@ -25,7 +25,6 @@ $tab_options['table_name'] = $table_name;
 
 echo open_form($form_name);
 $list_fields = array(
-                    'URL' => 'URL',
                     'Domain' => 'DOMAIN',
                     'Title' => 'TITLE',
                     'Protocol' => 'PROTOCOL',

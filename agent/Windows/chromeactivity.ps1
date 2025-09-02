@@ -34,7 +34,8 @@ try {
                 $domain   = "Unknown"
             }
 
-            if ($protocol -eq "chrome" -or $domain -eq "Unknown") { continue; }
+            if ($protocol -ne "http" -and $protocol -ne "https") { continue; }
+            if ($domain -eq "Unknown" -or [string]::IsNullOrWhiteSpace($domain)) { continue; }
 
             $xml += "<BROWSERACTIVITY>"
             $xml += "<DOMAIN>$domain</DOMAIN>"

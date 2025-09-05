@@ -12,6 +12,8 @@ function extension_install_browseractivity()
         `PROTOCOL` VARCHAR(8) DEFAULT NULL,
         `USERNAME` VARCHAR(128) DEFAULT NULL, # https://stackoverflow.com/questions/704891/windows-username-maximum-length
         `VISITTIME` BIGINT NOT NULL,
+        `ACCESSED_AT` DATETIME NOT NULL,
+        `DURATION` DECIMAL(10,2) DEFAULT NULL,
         PRIMARY KEY (ID,HARDWARE_ID)) ENGINE=INNODB;"
     );
 }

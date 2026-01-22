@@ -24,6 +24,7 @@ try {
     if ($response) {
         foreach ($event in $response) {
             $url = $event.data.url
+            $source = $event.data.browser
             try {
                 $uri      = [uri]$url
                 $protocol = $uri.Scheme
@@ -43,6 +44,7 @@ try {
             $xml += "<PROTOCOL>$protocol</PROTOCOL>"
             $xml += "<ACCESSED_AT>$($event.timestamp)</ACCESSED_AT>"
             $xml += "<DURATION>$($event.duration)</DURATION>" # duration in seconds.decimal
+            $xml += "<SOURCE>$source</SOURCE>"
             $xml += "</BROWSERACTIVITY>"
         }
     }

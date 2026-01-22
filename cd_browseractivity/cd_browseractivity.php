@@ -28,6 +28,7 @@ $list_fields = array(
                     'Domain' => 'DOMAIN',
                     'Title' => 'TITLE',
                     'Protocol' => 'PROTOCOL',
+                    'Source' => 'SOURCE',
                     // 'Username' => 'USERNAME',
                     // 'Visit Time' => 'VISITTIME',
                     'Accessed At' => 'ACCESSED_AT',

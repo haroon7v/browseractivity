@@ -82,7 +82,7 @@ sub browseractivity_inventory_handler {
         my $protocol = "Unknown";
         my $domain   = "Unknown";
         my $title    = $event->{data}->{title};
-        my $source   = $event->{data}->{browser};
+        my $browser   = $event->{data}->{browser};
 
         eval {
             my $uri = URI->new($event->{data}->{url});
@@ -103,7 +103,7 @@ sub browseractivity_inventory_handler {
             PROTOCOL    => [$protocol],
             DURATION    => [$event->{duration}],
             ACCESSED_AT => [$event->{timestamp}],
-            SOURCE      => [$source]
+            BROWSER     => [$browser]
         };
     }
 

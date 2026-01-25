@@ -19,7 +19,7 @@ $DATA_MAP{browseractivity} = {
       # VISITTIME => {},
       DURATION => {},
       ACCESSED_AT => {},
-      SOURCE => {}
+      BROWSER => {}
    }
 };
 1;

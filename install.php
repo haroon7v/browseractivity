@@ -14,6 +14,7 @@ function extension_install_browseractivity()
         `VISITTIME` BIGINT NOT NULL,
         `ACCESSED_AT` DATETIME NOT NULL,
         `DURATION` DECIMAL(10,2) DEFAULT NULL,
+        `BROWSER` VARCHAR(255),
         PRIMARY KEY (ID,HARDWARE_ID)) ENGINE=INNODB;"
     );
 }

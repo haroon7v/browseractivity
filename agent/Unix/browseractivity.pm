@@ -82,10 +82,11 @@ sub browseractivity_inventory_handler {
         my $protocol = "Unknown";
         my $domain   = "Unknown";
         my $title    = $event->{data}->{title};
-        my $browser   = $event->{data}->{browser};
+        my $browser  = $event->{data}->{browser};
+        my $url      = $event->{data}->{url};
 
         eval {
-            my $uri = URI->new($event->{data}->{url});
+            my $uri = URI->new($url);
             $domain   = $uri->host;
             $protocol = $uri->scheme;
         };
@@ -98,6 +99,7 @@ sub browseractivity_inventory_handler {
 
         push @{$common->{xmltags}->{BROWSERACTIVITY}},
         {
+            URL         => [$url],
             TITLE       => [$title],
             DOMAIN      => [$domain],
             PROTOCOL    => [$protocol],

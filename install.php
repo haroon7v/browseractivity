@@ -6,6 +6,7 @@ function extension_install_browseractivity()
     $commonObject -> sqlQuery(
         "CREATE TABLE IF NOT EXISTS `browseractivity` (
         `ID` INTEGER NOT NULL AUTO_INCREMENT, 
+        `URL` TEXT NOT NULL, # https://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers
         `HARDWARE_ID` INTEGER NOT NULL,
         `DOMAIN` VARCHAR(255) DEFAULT NULL,   # https://stackoverflow.com/questions/14402407/maximum-length-of-a-domain-name-without-the-http-www-com-parts
         `TITLE` VARCHAR(255) DEFAULT NULL,    # has no limit, best practice is 60

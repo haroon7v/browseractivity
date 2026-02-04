@@ -39,6 +39,7 @@ try {
             if ($domain -eq "Unknown" -or [string]::IsNullOrWhiteSpace($domain)) { continue; }
 
             $xml += "<BROWSERACTIVITY>"
+            $xml += "<URL>$url</URL>"
             $xml += "<DOMAIN>$domain</DOMAIN>"
             $xml += "<TITLE>$($event.data.title)</TITLE>"
             $xml += "<PROTOCOL>$protocol</PROTOCOL>"

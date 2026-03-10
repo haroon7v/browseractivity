@@ -52,32 +52,33 @@ sub browseractivity_inventory_handler {
     # Fetch buckets
     my $buckets = $self->json_request("$aw_server_url/buckets/") || return;
 
-    my $bucket_id;
+    my @bucket_ids;
     foreach my $key (keys %$buckets) {
         if ($self->is_browser_bucket($buckets->{$key})) {
-            $bucket_id = $key;
+            push @bucket_ids, $key;
             $logger->debug("Found bucket ID: $key");
-
-            last;
         }
     }
 
-    unless ($bucket_id) {
+    unless (@bucket_ids) {
         $logger->error("No AW bucket found");
         return;
     }
 
-    # Fetch events
     # 24 hours => 86400 seconds
     my $start_time = gmtime(time - 86400)->datetime . "Z";
-    my $events_url = "$aw_server_url/buckets/$bucket_id/events?start=$start_time&limit=-1";
+    my $total_events = 0;
 
-    my $events = $self->json_request($events_url) || return;
+    # Fetch and process events from all matching buckets
+    foreach my $bucket_id (@bucket_ids) {
+        my $events_url = "$aw_server_url/buckets/$bucket_id/events?start=$start_time&limit=-1";
+        my $events = $self->json_request($events_url) || next;
 
-    $logger->debug("Fetched " . scalar(@$events) . " events");
+        $logger->debug("Fetched " . scalar(@$events) . " events from bucket $bucket_id");
+        $total_events += scalar(@$events);
 
-    # Process events
-    foreach my $event (@$events) {
+        # Process events
+        foreach my $event (@$events) {
 
         my $protocol = "Unknown";
         my $domain   = "Unknown";
@@ -94,22 +95,23 @@ sub browseractivity_inventory_handler {
         next if ($protocol ne "http" && $protocol ne "https");
         next if ($domain  eq "Unknown" || !$domain);
 
-        # In Compression only 1 Bytes UTF is supported.
-        $title =~ s/[^\x00-\xFF]//g;
+            # In Compression only 1 Bytes UTF is supported.
+            $title =~ s/[^\x00-\xFF]//g;
 
-        push @{$common->{xmltags}->{BROWSERACTIVITY}},
-        {
-            URL         => [$url],
-            TITLE       => [$title],
-            DOMAIN      => [$domain],
-            PROTOCOL    => [$protocol],
-            DURATION    => [$event->{duration}],
-            ACCESSED_AT => [$event->{timestamp}],
-            BROWSER     => [$browser]
-        };
+            push @{$common->{xmltags}->{BROWSERACTIVITY}},
+            {
+                URL         => [$url],
+                TITLE       => [$title],
+                DOMAIN      => [$domain],
+                PROTOCOL    => [$protocol],
+                DURATION    => [$event->{duration}],
+                ACCESSED_AT => [$event->{timestamp}],
+                BROWSER     => [$browser]
+            };
+        }
     }
 
-    $logger->debug("BrowserActivity plugin completed, appended XML");
+    $logger->debug("BrowserActivity plugin completed, appended XML from $total_events events");
 }
 
 sub json_request {
@@ -139,7 +141,7 @@ sub json_request {
 sub is_browser_bucket {
     my ($self, $bucket) = @_;
 
-    $bucket->{client} eq $self->{aw_bucket_client} && $bucket->{hostname} ne "unknown";
+    $bucket->{client} eq $self->{aw_bucket_client};
 }
 
 1;

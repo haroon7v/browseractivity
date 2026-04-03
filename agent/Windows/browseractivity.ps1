@@ -2,6 +2,26 @@ $awServerUrl = "http://localhost:5600/api/0"
 $clientName = "aw-client-web"
 $timePeriod = -24 # last 1 day
 
+function Strip-UrlQuery {
+    param(
+        [Parameter(Mandatory=$false)]
+        [string] $Url
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Url)) { return $Url }
+
+    # Remove anything after '?' (query) or '#' (fragment).
+    $cutIndex = $Url.Length
+    $qIndex = $Url.IndexOf('?')
+    if ($qIndex -ge 0 -and $qIndex -lt $cutIndex) { $cutIndex = $qIndex }
+
+    $hashIndex = $Url.IndexOf('#')
+    if ($hashIndex -ge 0 -and $hashIndex -lt $cutIndex) { $cutIndex = $hashIndex }
+
+    if ($cutIndex -lt $Url.Length) { return $Url.Substring(0, $cutIndex) }
+    return $Url
+}
+
 try {
     # find bucketIds
     $bucketsEndpoint = "$awServerUrl/buckets/"
@@ -40,8 +60,9 @@ try {
                 if ($protocol -ne "http" -and $protocol -ne "https") { continue; }
                 if ($domain -eq "Unknown" -or [string]::IsNullOrWhiteSpace($domain)) { continue; }
 
+                $urlForXml = Strip-UrlQuery -Url $url
                 $xml += "<BROWSERACTIVITY>"
-                $xml += "<URL>$url</URL>"
+                $xml += "<URL>$urlForXml</URL>"
                 $xml += "<DOMAIN>$domain</DOMAIN>"
                 $xml += "<TITLE>$($event.data.title)</TITLE>"
                 $xml += "<PROTOCOL>$protocol</PROTOCOL>"

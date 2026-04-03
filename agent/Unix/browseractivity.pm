@@ -85,6 +85,7 @@ sub browseractivity_inventory_handler {
         my $title    = $event->{data}->{title};
         my $browser  = $event->{data}->{browser};
         my $url      = $event->{data}->{url};
+        my $url_for_xml = strip_url_query($url);
 
         eval {
             my $uri = URI->new($url);
@@ -100,7 +101,7 @@ sub browseractivity_inventory_handler {
 
             push @{$common->{xmltags}->{BROWSERACTIVITY}},
             {
-                URL         => [$url],
+                URL         => [$url_for_xml],
                 TITLE       => [$title],
                 DOMAIN      => [$domain],
                 PROTOCOL    => [$protocol],
@@ -142,6 +143,15 @@ sub is_browser_bucket {
     my ($self, $bucket) = @_;
 
     $bucket->{client} eq $self->{aw_bucket_client};
+}
+
+sub strip_url_query {
+    my ($url) = @_;
+    return $url if !defined $url || $url eq '';
+
+    # Remove anything after '?' (query) or '#' (fragment).
+    $url =~ s/[?#].*$//;
+    return $url;
 }
 
 1;
